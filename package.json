@@ -10,6 +10,10 @@
   "author": "",
   "bin": "./bin/index.js",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JianTin/create-react-cli"
+  },
   "dependencies": {
     "@babel/core": "^7.14.8",
     "commander": "^8.1.0",
