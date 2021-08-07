@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const {program} = require('commander')
 const pck = require('../package.json')
 const {mkdirSync} = require('fs')
