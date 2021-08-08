@@ -57,14 +57,15 @@ function cloneAfterOption(error){
     log('info', 'reset options start')
     const argv = Object.values(optionsResponse)
     const runScriptPath = join(mkdirPath, '/optionScript/index.js')
+    console.log(runScriptPath, argv)
     // 运行子程序
-    fork(runScriptPath, argv)
-        .on('close', ()=>{
-            log('info', 'reset options end')
-            console.log(`cd ${folderName}`)
-            console.log(`npm install`)
-            console.log('npm run dev')
-        })
+    // fork(runScriptPath, argv)
+    //     .on('close', ()=>{
+    //         log('info', 'reset options end')
+    //         console.log(`cd ${folderName}`)
+    //         console.log(`npm install`)
+    //         console.log('npm run dev')
+    //     })
     // 删除git相关
     remove(join(mkdirPath, '/.git'))
     remove(join(mkdirPath, '/.gitignore'))
