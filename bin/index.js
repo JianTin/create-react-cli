@@ -11,9 +11,9 @@ const log = require('node-pretty-log');
 const download = require('download-git-repo')
 
 const clonePaht = 'JianTin/react-project-template#master'
-let mkdirPath = ''
-let optionsResponse = ''
-let folderName = ''
+let mkdirPath = '' // 创建文件的路径
+let optionsResponse = '' // 选项返回值
+let folderName = '' // 创建文件的名
 const cwd = process.cwd()
 const option = [
     {
@@ -35,6 +35,7 @@ const option = [
     }
 ]
 
+// 创建 和 clone
 async function createFn(name){
     folderName = name
     // 文件夹路径
@@ -45,14 +46,17 @@ async function createFn(name){
     log('info', 'clone template start')
     download(`${clonePaht}`, folderName, cloneAfterOption)
 }
+
+// clone 失败处理
+function cloneFail(){
+    console.log(`git clone fail Check the network. delete the folder ${folderName} Re-execute the command `)
+    console.log(`git clone 失败，可能是网络问题。请删除文件夹 ${folderName}，重新执行命令 npx rough-react-cli name `)
+    console.log(error)
+}
+
 // 运行子文件对 选项创建
 function cloneAfterOption(error){
-    if(error) {
-        console.log(`git clone fail Check the network. delete the folder ${folderName} Re-execute the command `)
-        console.log(`git clone 失败，可能是网络问题。请删除文件夹 ${folderName}，重新执行命令 npx rough-react-cli name `)
-        console.log(error)
-        return
-    }
+    if(error) return cloneFail(error)
     log('info', 'clone template end')
     log('info', 'reset options start')
     const argv = Object.values(optionsResponse)
@@ -69,6 +73,7 @@ function cloneAfterOption(error){
     remove(join(mkdirPath, '/.git'))
     remove(join(mkdirPath, '/.gitignore'))
 }
+
 async function main(){
     program
         .version(pck.version)
