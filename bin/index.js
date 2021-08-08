@@ -6,11 +6,11 @@ const {mkdirSync} = require('fs')
 const {remove} = require('fs-extra')
 const {join} = require('path')
 const prompts = require('prompts')
-const clone = require('git-clone')
 const {spawn} = require('child_process')
 const log = require('node-pretty-log');
+const download = require('download-git-repo')
 
-const clonePaht = 'https://github.com/JianTin/react-project-template.git'
+const clonePaht = 'JianTin/react-project-template#master'
 let mkdirPath = ''
 let optionsResponse = ''
 let folderName = ''
@@ -43,7 +43,7 @@ async function createFn(name){
     mkdirSync(mkdirPath)
     optionsResponse = await prompts(option)
     log('info', 'clone template start')
-    clone(clonePaht, mkdirPath, cloneAfterOption)
+    download(`${clonePaht}`, folderName, cloneAfterOption)
 }
 // 运行子文件对 选项创建
 function cloneAfterOption(error){
