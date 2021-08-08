@@ -46,7 +46,13 @@ async function createFn(name){
     clone(clonePaht, mkdirPath, cloneAfterOption)
 }
 // 运行子文件对 选项创建
-function cloneAfterOption(){
+function cloneAfterOption(error){
+    if(error) {
+        log('error', `git clone fail Check the network. delete the folder ${folderName} Re-execute the command `)
+        log('error', `git clone 失败，可能是网络问题。请删除文件夹 ${folderName}，重新执行命令 npx rough-react-cli name `)
+        console.log(error)
+        return
+    }
     log('info', 'clone template end')
     log('info', 'reset options start')
     const argv = Object.values(optionsResponse)
