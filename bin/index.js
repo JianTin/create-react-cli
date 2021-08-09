@@ -62,9 +62,16 @@ function cloneAfterOption(error){
     const argv = Object.values(optionsResponse)
     const runScriptPath = join(mkdirPath, '/optionScript/index.js')
     // 运行子程序
-    spawn('node', [runScriptPath, ...argv])
-        .on('close', ()=>{
-            log('info', 'reset options end')
+    spawn('node', [runScriptPath, ...argv], {
+        shell: true, detached: true
+    })
+        .on('close', (code)=>{
+            if(code !== 0){
+                log('error', 'reset options error')
+                console.log(`node ${runScriptPath} ${argv.join(' ')}`)
+            } else {
+                log('info', 'reset options end')
+            }
             console.log(`cd ${folderName}`)
             console.log(`npm install`)
             console.log('npm run dev')
