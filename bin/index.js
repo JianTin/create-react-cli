@@ -98,7 +98,6 @@ function cloneAfterOption(error){
     log('info', 'reset options start')
     const argv = handelOptions()
     const runScriptPath = join(mkdirPath, '/optionScript/index.js')
-    console.log(argv)
     // 运行子程序
     spawn('node', [runScriptPath, ...argv], {
         shell: true
