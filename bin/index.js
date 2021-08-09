@@ -2,8 +2,8 @@
 
 const {program} = require('commander')
 const pck = require('../package.json')
-const {mkdirSync} = require('fs')
-const {remove} = require('fs-extra')
+const {mkdirSync, existsSync} = require('fs')
+const {remove, removeSync} = require('fs-extra')
 const {join} = require('path')
 const prompts = require('prompts')
 const {spawn} = require('child_process')
@@ -32,14 +32,42 @@ const option = [
         message: 'compatible IE (兼容IE) ?',
         active: 'yes',
         inactive: 'no'
+    },
+    {
+        type: 'toggle',
+        name: 'isMobile',
+        message: 'adaptation mobile (适配移动端) ?',
+        active: 'yes',
+        inactive: 'no'
+    },
+    {
+        type: prev=>prev === true ? 'number' : null,
+        name: 'mobile',
+        message: 'mobile size (设计稿尺寸)',
+        initial: 750
     }
 ]
 
-// 创建 和 clone
+// 创建 和 git clone
 async function createFn(name){
     folderName = name
     // 文件夹路径
     mkdirPath = join(cwd, name)
+    // 如果文件夹存在
+    if(existsSync(mkdirPath)){
+        const {isCover} = await prompts({
+            type: 'toggle',
+            name: 'isCover',
+            message: 'is cover dirFloder (是否覆盖文件夹) ?',
+            active: 'yes',
+            inactive: 'no',
+            initial: true
+        })
+        // 覆盖 那么删除
+        if(isCover) removeSync(mkdirPath)
+        // 否则退出
+        if(!isCover) return
+    }
     // 创建文件夹
     mkdirSync(mkdirPath)
     optionsResponse = await prompts(option)
@@ -48,10 +76,19 @@ async function createFn(name){
 }
 
 // clone 失败处理
-function cloneFail(){
+function cloneFail(error){
     console.log(`git clone fail Check the network. delete the folder ${folderName} Re-execute the command `)
     console.log(`git clone 失败，可能是网络问题。请删除文件夹 ${folderName}，重新执行命令 npx rough-react-cli name `)
     console.log(error)
+}
+
+// 处理 选项数据
+function handelOptions(){
+    if(!optionsResponse['mobile']) optionsResponse['mobile'] = 'false'
+    return Object.keys(optionsResponse).reduce((prev, key)=>{
+        if(key !== 'isMobile') prev.push(optionsResponse[key])
+        return prev
+    }, [])
 }
 
 // 运行子文件对 选项创建
@@ -59,11 +96,12 @@ function cloneAfterOption(error){
     if(error) return cloneFail(error)
     log('info', 'clone template end')
     log('info', 'reset options start')
-    const argv = Object.values(optionsResponse)
+    const argv = handelOptions()
     const runScriptPath = join(mkdirPath, '/optionScript/index.js')
+    console.log(argv)
     // 运行子程序
     spawn('node', [runScriptPath, ...argv], {
-        shell: true, detached: true
+        shell: true
     })
         .on('close', (code)=>{
             if(code !== 0){
@@ -89,4 +127,4 @@ async function main(){
     await program.parseAsync(process.argv)
 }
 
-main() 
+main()
