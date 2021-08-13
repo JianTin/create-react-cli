@@ -29,7 +29,7 @@ const option = [
     {
         type: 'toggle',
         name: 'IE',
-        message: 'compatible IE (兼容IE) ?',
+        message: 'inject all 2015+ mode(注入完整 2015+ 环境) ?',
         active: 'yes',
         inactive: 'no'
     },
